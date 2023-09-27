@@ -22,9 +22,11 @@ function Item({ item, onUpdateItem, onDeleteItem}) {
       method: "DELETE",
     })
       .then((r) => r.json())
-      .then(() => onDeleteItem("deleted!"));
+      // update without force refreshing
+      .then(() => onDeleteItem(item));
   }
 
+ // ()=> onDeleteItem(item)
   return (
     <li className={item.isInCart ? "in-cart" : ""}>
       <span>{item.name}</span>
@@ -35,7 +37,8 @@ function Item({ item, onUpdateItem, onDeleteItem}) {
       >
         {item.isInCart ? "Remove From" : "Add to"} Cart
       </button>
-      <button className="remove" onClick={()=> onDeleteItem(item)}>Delete</button>
+      <button className="remove" onClick={handleDeleteClick}>Delete</button>
+     
     </li>
   );
 }
