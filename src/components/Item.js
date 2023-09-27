@@ -26,9 +26,9 @@ function Item({ item, onUpdateItem, onDeleteItem}) {
       .then(() => onDeleteItem(item));
   }
 
-  function onDeleteItem() {
-    // delete the item
-  }
+  // function onDeleteItem() {
+  //   // delete the item
+  // }
  // ()=> onDeleteItem(item)
   return (
     <li className={item.isInCart ? "in-cart" : ""}>
