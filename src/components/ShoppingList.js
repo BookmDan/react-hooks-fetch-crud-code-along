@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect  } from "react";
 import ItemForm from "./ItemForm";
 import Filter from "./Filter";
 import Item from "./Item";
@@ -6,65 +6,32 @@ import Item from "./Item";
 function ShoppingList() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [items, setItems] = useState([]);
-  const [error, setError] = useState(null)
-  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchItems();
-  }, [])
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   const itemData = {
-  //     name: name,
-  //     category: category,
-  //     isInCart: false,
-  //   };
-
-  //   fetch("http://localhost:4000/items", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(itemData),
-  //   })
-  //     .then((r) => r.json())
-  //     .then((newItem) => console.log(newItem));
-  // }
-
-  
-  const fetchItems = () => {
     fetch("http://localhost:4000/items")
       .then((r) => r.json())
-      .then((items) => {
-        setItems(items)
-        // setLoading(false)
-      })
-      .catch((e) => {
-        console.error("Error fetching data: ", e)
-        setError("Error fetching data. Please try again later.")
-        // setLoading(false)
-      })
-  }
+      .then((items) => setItems(items));
+  }, []);
 
-  function handleToggleIsInCart(itemId) {
-    // Update the isInCart status for the item with the specified itemId
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, isInCart: !item.isInCart } : item
-      )
-    );
+  // function handleDeleteItem(deletedItem) {
+  //   console.log("In ShoppingCart:", deletedItem);
+  // }
+
+  function handleUpdateItem(updatedItem) {
+    const updatedItems = items.map((item) => {
+      if (item.id === updatedItem.id) {
+        return updatedItem;
+      } else {
+        return item;
+      }
+    });
+    setItems(updatedItems);
+    // console.log("In ShoppingCart:", updatedItem);
   }
 
   function handleAddItem(newItem) {
-    // console.log("In ShoppingList:", newItem)
-    setItems([...items, newItem])
-  }
-
-  function handleDeleteItem(itemId) {
-    console.log('Deleting item with ID:', itemId);
-    // Remove the item with the specified itemId from the list
-    setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    setItems([...items, newItem]);
+    // console.log("In ShoppingList:", newItem);
   }
 
   function handleCategoryChange(category) {
@@ -73,29 +40,30 @@ function ShoppingList() {
 
   const itemsToDisplay = items.filter((item) => {
     if (selectedCategory === "All") return true;
+
     return item.category === selectedCategory;
   });
 
+  function handleDeleteItem(deletedItem) {
+    const updatedItems = items.filter((item) => item.id !== deletedItem.id);
+    setItems(updatedItems);
+  }
 
   return (
     <div className="ShoppingList">
-      <ItemForm onAddItem={handleAddItem} />
+      <ItemForm onAddItem={handleAddItem}/>
       <Filter
         category={selectedCategory}
         onCategoryChange={handleCategoryChange}
       />
-      {error &&<div className="error-message">{error}</div>}
       <ul className="Items">
         {itemsToDisplay.map((item) => (
-          <div key={item.id}>
-            <Item
-              key={item.id}
-              item={item}
-              onToggleIsInCart={handleToggleIsInCart}
-              onDelete={handleDeleteItem}
+          <Item
+            key={item.id}
+            item={item}
+            onUpdateItem={handleUpdateItem}
+            onDeleteItem={handleDeleteItem}
             />
-            {/* <button onClick={() => handleDeleteItem(item.id)}>Delete</button> */}
-          </div>
         ))}
       </ul>
     </div>

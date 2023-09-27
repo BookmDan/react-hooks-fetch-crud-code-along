@@ -1,24 +1,41 @@
 import React from "react";
 
-function Item({ item, onToggleIsInCart, onDelete }) {
-  const handleToggleIsInCart = () => {
-    onToggleIsInCart(item.id)
+function Item({ item, onUpdateItem, onDeleteItem}) {
+  function handleAddToCartClick() {
+    // console.log("clicked item:", item);
+    fetch(`http://localhost:4000/items/${item.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        isInCart: !item.isInCart,
+      }),
+    })
+      .then((r) => r.json())
+      .then((updatedItem) => onUpdateItem(updatedItem));
   }
 
-  const handleDelete = () => {
-    onDelete(item.id)
+  function handleDeleteClick() {
+    // console.log(item);
+    fetch(`http://localhost:4000/items/${item.id}`, {
+      method: "DELETE",
+    })
+      .then((r) => r.json())
+      .then(() => onDeleteItem("deleted!"));
   }
+
   return (
     <li className={item.isInCart ? "in-cart" : ""}>
       <span>{item.name}</span>
       <span className="category">{item.category}</span>
       <button
         className={item.isInCart ? "remove" : "add"}
-        onClick={handleToggleIsInCart}
+        onClick = {handleAddToCartClick}
       >
         {item.isInCart ? "Remove From" : "Add to"} Cart
       </button>
-      <button className="remove" onClick={handleDelete}>Delete</button>
+      <button className="remove" onClick={()=> onDeleteItem(item)}>Delete</button>
     </li>
   );
 }

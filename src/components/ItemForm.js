@@ -5,22 +5,24 @@ function ItemForm({onAddItem}) {
   const [category, setCategory] = useState("Produce");
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     const itemData = {
       name: name,
       category: category,
-      inInCart: false,
-    }
+      isInCart: false,
+    };
+    // console.log(itemData);
+    // console.log("name:", name);
+    // console.log("category:", category);
     fetch("http://localhost:4000/items", {
       method: "POST",
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(itemData),
     })
-      .then(r => r.json())
-    .then(newItem => onAddItem(newItem))
-    console.log(itemData)
+      .then((r) => r.json())
+      .then((newItem) => onAddItem(newItem));
   }
 
   return (
